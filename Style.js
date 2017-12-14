@@ -1,26 +1,47 @@
 const colors = {
-    redWerewolf: '#620911',
+    redWerewolf: 'transparent',
     green: '#09621E',
     softBlue: '#0776AE',
     strongBlue: '#1D6C95',
-    softRed: '#AE212E'
+    softRed: '#AE212E',
+    grey: "#666666",
+    linearGradient: {
+        start: '#0A1620',
+        end: '#201F43'
+    }
 };
 
 export default {
     colors,
     container: {
-        flex: 1,
-        backgroundColor: colors.redWerewolf,
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        flex: 1
     },
     home: {
+        gameMasterButton: {
+            flex: 1,
+            alignSelf: 'stretch',
+            justifyContent: 'center'
+        },
+        playerButton: {
+            flex: 1,
+            alignSelf: 'stretch',
+            justifyContent: 'center',
+
+        },
+        buttonView: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'space-between'
+        },
         container: {
             flex: 1,
-            backgroundColor: colors.redWerewolf,
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'space-around',
+            alignSelf: 'stretch'
         },
         titleText: {
             color: '#fff',
@@ -29,6 +50,7 @@ export default {
         },
         titleView: {
             flex: 1,
+            backgroundColor: 'transparent',
             justifyContent: 'center'
         },
         actionView: {
@@ -46,21 +68,55 @@ export default {
         generic: {
             borderColor: 'white',
             marginHorizontal: 5
+        },
+        idle: {
+            backgroundColor: colors.green,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 5,
+            borderWidth: 1,
+            borderColor: 'white',
+            height: 40
+        },
+        busy: {
+            backgroundColor: colors.grey,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 5,
+            borderWidth: 1,
+            borderColor: 'white',
+            height: 40
+        },
+        error: {
+            backgroundColor: colors.softRed,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 5,
+            borderWidth: 1,
+            borderColor: 'white',
+            height: 40
         }
     },
     gameMasterHome: {
         container: {
-            flex: 1,
-            backgroundColor: colors.redWerewolf,
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
+            flex: 1,
+            alignSelf: 'stretch'
+        },
+        pickView: {
+            alignSelf: 'stretch'
+        },
+        recapView: {
+            alignSelf: 'stretch'
         },
         inputPlayers: {
             alignSelf: 'stretch'
         },
         playersView: {
             alignSelf: 'stretch',
+            backgroundColor: 'transparent'
         },
         charactersView: {
             marginTop: 10,
@@ -92,14 +148,16 @@ export default {
             },
             titleView: {
                 flexDirection: 'column',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                backgroundColor: 'transparent'
             },
             actionsView: {
                 flexDirection: 'row'
             },
             buttonView: {
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                backgroundColor: 'transparent'
             }
         }
     }

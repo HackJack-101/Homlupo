@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, TextInput, Button} from 'react-native';
+import PropTypes from 'prop-types';
 import style from './../Style';
 
 export default class NumericInput extends React.Component {
@@ -13,7 +14,7 @@ export default class NumericInput extends React.Component {
             this.props.titleStyle = {};
         }
         this.state = {
-            intValue: parseInt(props.value),
+            intValue: props.value,
             textValue: String(props.value)
         }
     }
@@ -23,7 +24,7 @@ export default class NumericInput extends React.Component {
             intValue: value,
             textValue: String(value)
         });
-        if (this.props.hasOwnProperty('onChangeValue') && typeof this.props.onChangeValue === 'function') {
+        if (this.props.hasOwnProperty('onChangeValue')) {
             this.props.onChangeValue(value);
         }
     }
@@ -33,17 +34,17 @@ export default class NumericInput extends React.Component {
         this.setValue(intValue);
     }
 
-    incrementValue() {
+    incrementValue = () => {
         let value = this.state.intValue + 1;
         this.setValue(value);
-    }
+    };
 
-    decrementValue() {
+    decrementValue = () => {
         let value = this.state.intValue - 1;
         if (!(this.props.hasOwnProperty('min') && value < this.props.min)) {
             this.setValue(value);
         }
-    }
+    };
 
     render() {
         return (
@@ -59,14 +60,20 @@ export default class NumericInput extends React.Component {
                         keyboardType='numeric'
                     />
                     <View style={style.components.numericInput.buttonView}>
-                        <Button color='white' onPress={_ => this.incrementValue()} title="+"/>
+                        <Button color='white' onPress={this.incrementValue} title="+"/>
                     </View>
                     <View style={style.components.numericInput.buttonView}>
-                        <Button color='white' onPress={_ => this.decrementValue()} title="-"/>
+                        <Button color='white' onPress={this.decrementValue} title="-"/>
                     </View>
                 </View>
             </View>
         );
     }
-
 }
+
+NumericInput.propTypes = {
+    inputStyle: PropTypes.object,
+    titleStyle: PropTypes.object,
+    value: PropTypes.number.isRequired,
+    onChangeValue: PropTypes.func
+};
