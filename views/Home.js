@@ -43,7 +43,7 @@ export default class Home extends React.Component {
             <LinearGradient style={{flex: 1}} colors={[style.colors.linearGradient.start, style.colors.linearGradient.end]}>
                 <View style={style.container}>
                     <View style={style.home.container}>
-                        <TouchableHighlight onPress={this.goToGameMasterHome} style={style.home.gameMasterButton} activeOpacity={1} underlayColor={'rgba(255,255,255,0.1)'}>
+                        <TouchableHighlight onPress={this.goToGameMasterHome} style={style.home.gameMasterButton} underlayColor={'rgba(255,255,255,0.1)'}>
                             <View style={[style.home.buttonView, {paddingBottom:20}]}>
                                 <View/>
                                 <Image style={{width: 170, height: 110}} source={require('./../assets/icons/book-512.png')}/>

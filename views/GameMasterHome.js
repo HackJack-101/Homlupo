@@ -1,8 +1,6 @@
 import React from 'react';
-import {View, Text, Platform, StatusBar, SectionList} from 'react-native';
+import {View, Text, Platform, StatusBar, ScrollView, TouchableHighlight} from 'react-native';
 import style from './../Style';
-import Button from 'apsl-react-native-button';
-import NumericInput from '../components/NumericInput';
 import AwesomeButton from 'react-native-awesome-button';
 import axios from 'axios';
 import {LinearGradient} from 'expo';
@@ -38,50 +36,69 @@ export default class GameMasterHome extends React.Component {
         };
         this.availableCharacters = [
             {
-                section: {
-                    title: 'Villageois',
-                    color: '#9BC089'
-                },
+                title: 'Villageois',
+                color: '#9BC089',
                 data: Characters.townFolks
             },
             {
-                section: {
-                    title: 'Pouvoirs',
-                    color: '#9BC089'
-                },
+                title: 'Pouvoirs',
+                color: '#9BC089',
                 data: Characters.powerUsers
             },
             {
-
-                section: {
-                    title: 'Loups-garous',
-                    color: '#F15720'
-                },
+                title: 'Loups-garous',
+                color: '#F15720',
                 data: Characters.werewolves
             },
             {
 
-                section: {
-                    title: 'Ennemis de tous',
-                    color: '#9BC089'
-                },
+                title: 'Ennemis de tous',
+                color: '#9BC089',
                 data: Characters.enemies
             }
         ];
     }
 
-    addCharacter(id) {
-        let addedCharacter = this.state.extraCharacters[id];
+    incrementCharacter(name) {
         let characters = this.state.characters.slice();
-        characters.push({
-            name: addedCharacter.name, code: addedCharacter.code, number: 1
+        let index = null;
+        let ifAlreadyAdded = characters.some((character, i) => {
+            index = i;
+            return character.name === name;
         });
-
-        let extraCharacters = this.state.extraCharacters.filter((extraCharacter) => {
-            return extraCharacter.name !== addedCharacter.name;
-        });
-        this.setState({characters, extraCharacters});
+        if (ifAlreadyAdded) {
+            if (!Characters.data[name].unique) {
+                characters[index].number++;
+            }
+        } else {
+            characters.push({
+                name, number: 1
+            });
+        }
+        this.setState({characters});
     };
+
+    decrementCharacter(name) {
+        let characters = this.state.characters.slice();
+        let index = null;
+        let ifAlreadyAdded = characters.some((character, i) => {
+            index = i;
+            return character.name === name;
+        });
+        if (ifAlreadyAdded) {
+            if (characters[index].number === 1) {
+                if (characters.length === 1) {
+                    characters = [];
+                } else {
+                    characters.splice(index, 1);
+                }
+            }
+            else {
+                characters[index].number--;
+            }
+            this.setState({characters});
+        }
+    }
 
     getPlayers() {
         return this.state.characters.reduce((a, b) => a + b.number, 0);
@@ -94,71 +111,131 @@ export default class GameMasterHome extends React.Component {
             characters[character.code] = character.number;
         });
         axios.post('http://homlupo.hackjack.info/game', characters).then((response) => {
-            console.log(response);
             this.props.navigation.navigate('Game', {room: response.data.id});
         });
     };
+
+    static translate(object, lang) {
+        return object[lang];
+    }
+
+    static translateNumber(object, lang, number) {
+        if (number > 1) {
+            return object.plural[lang];
+        }
+        return object.singular[lang];
+    }
 
     render() {
         return (
             <LinearGradient style={{flex: 1}} colors={['#0A1620', '#201F43']}>
                 <View style={style.gameMasterHome.container}>
                     <View style={style.gameMasterHome.pickView}>
-                        <SectionList
-                            renderItem={({item, j, index}) => {
+                        <ScrollView>
+                            {this.availableCharacters.map((section, key) => {
                                 return (
-                                    <View key={index} style={{backgroundColor: 'transparent'}}>
-                                        <Text style={{color: 'white'}}>{item}</Text>
+                                    <View key={key}>
+                                        <View style={{backgroundColor: 'transparent'}}>
+                                            <Text style={{
+                                                color: section.color,
+                                                textAlign: 'center',
+                                                fontFamily: 'spectralSC',
+                                                fontSize: 18
+                                            }}>
+                                                {section.title}
+                                            </Text>
+                                            <Separator color={section.color} height={3}/>
+                                        </View>
+                                        <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
+                                            {section.data.map((character, cKey) => {
+                                                return (
+                                                    <TouchableHighlight key={cKey}
+                                                                        onPress={() => this.incrementCharacter(character)}
+                                                                        underlayColor={'rgba(255,255,255,0.1)'}>
+                                                        <View style={{
+                                                            backgroundColor: 'transparent',
+                                                            padding: 5
+                                                        }}>
+                                                            <Text style={{
+                                                                color: Characters.data[character].color,
+                                                                fontFamily: 'berkshire-swash',
+                                                                fontSize: 28
+                                                            }}>
+                                                                {GameMasterHome.translate(Characters.data[character].title, 'fr')}
+                                                            </Text>
+                                                        </View>
+                                                    </TouchableHighlight>
+                                                );
+                                            })}
+                                        </View>
                                     </View>
                                 );
-                            }}
-                            renderSectionHeader={({section}) => {
-                                return (
-                                    <View style={{backgroundColor: 'transparent'}}>
-                                        <Text style={{color: section.section.color}}>{section.section.title}</Text>
-                                        <Separator color={section.section.color} height={3}/>
-                                    </View>
-                                );
-                            }}
-                            sections={this.availableCharacters}
-                            keyExtractor={(item, index) => index}
-                            initialNumToRender={20}
-                            onEndReachedThreshold={0.1}
-                        />
+                            })}
+                        </ScrollView>
                     </View>
-                    <View style={style.gameMasterHome.recapView}>
-                        <View style={style.gameMasterHome.playersView}>
-                            <Text style={{color: 'white', fontWeight: 'bold', textAlign: 'center'}}>{this.getPlayers()} joueurs</Text>
-                        </View>
+                    <View style={style.gameMasterHome.splitView}>
+                        <Separator color={'#7A7A94'} height={3}/>
+                        <View style={style.gameMasterHome.recapView}>
+                            <View style={style.gameMasterHome.playersView}>
+                                <Text style={{
+                                    color: '#F1D7C5',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'EBGaramond-xBoldItalic'
+                                }}>
+                                    Déjà présents dans le village ({this.getPlayers()}) :
+                                </Text>
+                                <ScrollView>
+                                    <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
+                                        {this.state.characters.map((character, key) => {
+                                            return (
+                                                <TouchableHighlight key={key}
+                                                                    onPress={() => this.decrementCharacter(character.name)}
+                                                                    underlayColor={'rgba(255,255,255,0.1)'}>
+                                                    <View style={{backgroundColor: 'transparent', padding: 5}}>
+                                                        <Text style={{
+                                                            color: Characters.data[character.name].color,
+                                                            fontFamily: 'berkshire-swash',
+                                                            fontSize: 18
+                                                        }}>
+                                                            {character.number} {GameMasterHome.translateNumber(Characters.data[character.name], 'fr', character.number)}
+                                                        </Text>
+                                                    </View>
+                                                </TouchableHighlight>
+                                            );
+                                        })}
+                                    </View>
+                                </ScrollView>
+                            </View>
 
-                        <View style={{alignSelf: 'stretch', paddingHorizontal: 5, paddingBottom: 10}}>
-                            <AwesomeButton
-                                states={{
-                                    idle: {
-                                        text: 'Créer la partie',
-                                        backgroundStyle: style.button.idle,
-                                        labelStyle: style.button.light,
-                                        onPress: this.createGame
-                                    },
-                                    busy: {
-                                        text: 'Création en cours',
-                                        spinner: true,
-                                        labelStyle: style.button.light,
-                                        spinnerProps: {
-                                            animated: true,
-                                            color: 'white'
+                            <View style={style.gameMasterHome.submitView}>
+                                <AwesomeButton
+                                    states={{
+                                        idle: {
+                                            text: 'Créer la partie',
+                                            backgroundStyle: style.button.idle,
+                                            labelStyle: style.button.light,
+                                            onPress: this.createGame
                                         },
-                                        backgroundStyle: style.button.busy
-                                    },
-                                    error: {
-                                        text: 'Non valide',
-                                        labelStyle: style.button.light,
-                                        backgroundStyle: style.button.error
-                                    }
-                                }}
-                                transitionDuration={400}
-                                buttonState={this.state.buttonState}
-                            />
+                                        busy: {
+                                            text: 'Création en cours',
+                                            spinner: true,
+                                            labelStyle: style.button.light,
+                                            spinnerProps: {
+                                                animated: true,
+                                                color: 'white'
+                                            },
+                                            backgroundStyle: style.button.busy
+                                        },
+                                        error: {
+                                            text: 'Non valide',
+                                            labelStyle: style.button.light,
+                                            backgroundStyle: style.button.error
+                                        }
+                                    }}
+                                    transitionDuration={400}
+                                    buttonState={this.state.buttonState}
+                                />
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -166,38 +243,3 @@ export default class GameMasterHome extends React.Component {
         );
     }
 }
-
-
-/*
-
-<View style={style.gameMasterHome.playersView}>
-                        <View style={style.gameMasterHome.charactersView}>
-                            {this.state.characters.map((character, key) => {
-                                return (
-                                    <View style={style.gameMasterHome.inputPlayers} key={key}>
-                                        <NumericInput
-                                            title={'Nombre de ' + (character.number > 1 ? this.characters[character.name].pluralTitle : this.characters[character.name].title) + ' :'}
-                                            value={character.number}
-                                            onChangeValue={(value) => {
-                                                let characters = this.state.characters.slice();
-                                                characters[key].number = value;
-                                                this.setState({characters});
-                                            }}
-                                            min={0}
-                                        />
-                                    </View>
-                                );
-                            })}
-                        </View>
-                    </View>
-
-                    {this.state.extraCharacters.map((character, key) => {
-                        return (
-                            <Button key={key} style={[style.button.generic, {backgroundColor: style.colors.strongBlue}]}
-                                    textStyle={style.button.light}
-                                    onPress={() => this.addCharacter(key)}>
-                                {'Ajouter ' + this.characters[character.name].article + ' ' + this.characters[character.name].title}
-                            </Button>
-                        );
-                    })}
- */

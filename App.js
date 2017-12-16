@@ -16,6 +16,8 @@ export default class App extends React.Component {
             'berkshire-swash': require('./assets/fonts/BerkshireSwash-Regular.ttf'),
             'spectralSC': require('./assets/fonts/SpectralSC-Regular.ttf'),
             'EBGaramond-regular': require('./assets/fonts/EBGaramond-Regular.ttf'),
+            'EBGaramond-xBold': require('./assets/fonts/EBGaramond-ExtraBold.ttf'),
+            'EBGaramond-xBoldItalic': require('./assets/fonts/EBGaramond-ExtraBoldItalic.ttf'),
         });
         this.setState({isLoadingComplete: true});
     }

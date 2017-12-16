@@ -106,18 +106,37 @@ export default {
             alignSelf: 'stretch'
         },
         pickView: {
+            flex: 5,
             alignSelf: 'stretch'
         },
+        splitView: {
+            flex: 5,
+            alignSelf: 'stretch',
+            alignItems: 'center',
+            justifyContent: 'flex-start'
+        },
         recapView: {
-            alignSelf: 'stretch'
+            flex: 1,
+            alignSelf: 'stretch',
+            justifyContent: 'space-between'
         },
         inputPlayers: {
             alignSelf: 'stretch'
         },
         playersView: {
             alignSelf: 'stretch',
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
+            paddingVertical: 5,
+            paddingHorizontal: 15,
+            flex:6
         },
+        submitView: {
+            flex:1,
+            alignSelf: 'stretch',
+            paddingHorizontal: 5,
+            paddingVertical: 10
+        }
+        ,
         charactersView: {
             marginTop: 10,
             alignSelf: 'stretch'
