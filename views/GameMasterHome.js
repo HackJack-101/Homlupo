@@ -78,6 +78,17 @@ export default class GameMasterHome extends React.Component {
         this.setState({characters});
     };
 
+
+    isDisabled(name) {
+        if (Characters.data[name].unique) {
+            let ifAlreadyAdded = this.state.characters.some((character, i) => {
+                return character.name === name;
+            });
+            return ifAlreadyAdded;
+        }
+        return false;
+    };
+
     decrementCharacter(name) {
         let characters = this.state.characters.slice();
         let index = null;
@@ -108,7 +119,7 @@ export default class GameMasterHome extends React.Component {
         this.setState({buttonState: 'busy'});
         let characters = {};
         this.state.characters.forEach((character) => {
-            characters[character.code] = character.number;
+            characters[character.name] = character.number;
         });
         axios.post('http://homlupo.hackjack.info/game', characters).then((response) => {
             this.props.navigation.navigate('Game', {room: response.data.id});
@@ -148,24 +159,27 @@ export default class GameMasterHome extends React.Component {
                                         </View>
                                         <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
                                             {section.data.map((character, cKey) => {
-                                                return (
-                                                    <TouchableHighlight key={cKey}
-                                                                        onPress={() => this.incrementCharacter(character)}
-                                                                        underlayColor={'rgba(255,255,255,0.1)'}>
-                                                        <View style={{
-                                                            backgroundColor: 'transparent',
-                                                            padding: 5
-                                                        }}>
-                                                            <Text style={{
-                                                                color: Characters.data[character].color,
-                                                                fontFamily: 'berkshire-swash',
-                                                                fontSize: 28
+                                                if (!this.isDisabled(character)) {
+                                                    return (
+                                                        <TouchableHighlight key={cKey}
+                                                                            onPress={() => this.incrementCharacter(character)}
+                                                                            underlayColor={'rgba(255,255,255,0.1)'}
+                                                                            disabled={this.isDisabled(character)}>
+                                                            <View style={{
+                                                                backgroundColor: 'transparent',
+                                                                padding: 5
                                                             }}>
-                                                                {GameMasterHome.translate(Characters.data[character].title, 'fr')}
-                                                            </Text>
-                                                        </View>
-                                                    </TouchableHighlight>
-                                                );
+                                                                <Text style={{
+                                                                    color: Characters.data[character].color,
+                                                                    fontFamily: 'berkshire-swash',
+                                                                    fontSize: 28
+                                                                }}>
+                                                                    {GameMasterHome.translate(Characters.data[character].title, 'fr')}
+                                                                </Text>
+                                                            </View>
+                                                        </TouchableHighlight>
+                                                    );
+                                                }
                                             })}
                                         </View>
                                     </View>
@@ -184,7 +198,7 @@ export default class GameMasterHome extends React.Component {
                                 }}>
                                     Déjà présents dans le village ({this.getPlayers()}) :
                                 </Text>
-                                <ScrollView>
+                                <ScrollView style={{marginTop: 2}}>
                                     <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
                                         {this.state.characters.map((character, key) => {
                                             return (
