@@ -31,11 +31,11 @@ export default class Home extends React.Component {
     }
 
     goToGameMasterHome = () => {
-        this.props.navigation.navigate('GameMasterHome');
+        this.props.navigation.navigate('GameMasterOptions');
     };
 
     goToPlayer = () => {
-        this.props.navigation.navigate('PlayerHome');
+        this.props.navigation.navigate('PlayerOptions');
     };
 
     render() {

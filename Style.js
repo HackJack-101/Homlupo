@@ -17,7 +17,23 @@ export default {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 1
+        flex: 1,
+        backgroundColor: 'transparent'
+    },
+    options: {
+        container: {
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flex: 1,
+            alignSelf: 'stretch'
+        },
+        button: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'stretch'
+        }
     },
     home: {
         gameMasterButton: {
@@ -95,6 +111,15 @@ export default {
             borderWidth: 1,
             borderColor: 'white',
             height: 40
+        }
+    },
+    gameMasterOptions: {
+        button: {},
+        buttonText: {
+            fontSize: 24,
+            fontWeight: 'bold',
+            color: 'white',
+            fontFamily: 'berkshire-swash'
         }
     },
     gameMasterHome: {
@@ -178,5 +203,9 @@ export default {
                 backgroundColor: 'transparent'
             }
         }
+    },
+    activityIndicator: {
+        margin: 20,
+        marginTop: 30
     }
 };

@@ -73,6 +73,7 @@ export default class NumericInput extends React.Component {
 
 NumericInput.propTypes = {
     inputStyle: PropTypes.object,
+    title: PropTypes.string,
     titleStyle: PropTypes.object,
     value: PropTypes.number.isRequired,
     onChangeValue: PropTypes.func

@@ -7,6 +7,7 @@ import {LinearGradient} from 'expo';
 import NavigationBar from 'react-native-navbar';
 import Characters from './../data/Characters';
 import Separator from './../components/Separator';
+import Translate from './../utils/Translate';
 
 export default class GameMasterHome extends React.Component {
     static navigationOptions = ({navigation}) => {
@@ -30,6 +31,7 @@ export default class GameMasterHome extends React.Component {
 
     constructor(props) {
         super(props);
+        this.freestyle = this.props.navigation.state.params.freestyle;
         this.state = {
             buttonState: 'idle',
             characters: []
@@ -67,7 +69,7 @@ export default class GameMasterHome extends React.Component {
             return character.name === name;
         });
         if (ifAlreadyAdded) {
-            if (!Characters.data[name].unique) {
+            if (!Characters.data[name].unique || this.freestyle) {
                 characters[index].number++;
             }
         } else {
@@ -80,7 +82,7 @@ export default class GameMasterHome extends React.Component {
 
 
     isDisabled(name) {
-        if (Characters.data[name].unique) {
+        if (!this.freestyle && Characters.data[name].unique) {
             let ifAlreadyAdded = this.state.characters.some((character, i) => {
                 return character.name === name;
             });
@@ -121,21 +123,11 @@ export default class GameMasterHome extends React.Component {
         this.state.characters.forEach((character) => {
             characters[character.name] = character.number;
         });
-        axios.post('http://homlupo.hackjack.info/game', characters).then((response) => {
+        axios.post('http://homlupo.hackjack.info/game', {characters}).then((response) => {
             this.props.navigation.navigate('Game', {room: response.data.id});
         });
+
     };
-
-    static translate(object, lang) {
-        return object[lang];
-    }
-
-    static translateNumber(object, lang, number) {
-        if (number > 1) {
-            return object.plural[lang];
-        }
-        return object.singular[lang];
-    }
 
     render() {
         return (
@@ -174,7 +166,7 @@ export default class GameMasterHome extends React.Component {
                                                                     fontFamily: 'berkshire-swash',
                                                                     fontSize: 28
                                                                 }}>
-                                                                    {GameMasterHome.translate(Characters.data[character].title, 'fr')}
+                                                                    {Translate.translate(Characters.data[character].title, 'fr')}
                                                                 </Text>
                                                             </View>
                                                         </TouchableHighlight>
@@ -211,7 +203,7 @@ export default class GameMasterHome extends React.Component {
                                                             fontFamily: 'berkshire-swash',
                                                             fontSize: 18
                                                         }}>
-                                                            {character.number} {GameMasterHome.translateNumber(Characters.data[character.name], 'fr', character.number)}
+                                                            {character.number} {Translate.translateNumber(Characters.data[character.name], 'fr', character.number)}
                                                         </Text>
                                                     </View>
                                                 </TouchableHighlight>
