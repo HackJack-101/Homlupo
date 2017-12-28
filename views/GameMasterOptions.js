@@ -63,7 +63,7 @@ export default class GameMasterOptions extends React.Component {
                         onPress={() => this.props.navigation.navigate('GameMasterDebug')}
                         underlayColor={'rgba(255,255,255,0.1)'}>
                         <View style={{backgroundColor: 'transparent'}}>
-                            <Text style={style.gameMasterOptions.buttonText}>Mode debug</Text>
+                            <Text style={style.gameMasterOptions.buttonText}>Reprise de partie</Text>
                         </View>
                     </TouchableHighlight>
                 </View>
